@@ -19,8 +19,7 @@
     $scope.$watch('words', function(newValue, oldValue) {
       var i = [];
       var items = [];
-      var ignoreList = '';//licenses,***********,HTTP,http,License,Technologies,NFS,Creative,Commons,by,be,under,30,from,about,on, *,to,s,i,please,it,a,for,this,in,the,and,is,of,an,with,u,us,that,been,An,*,A,in,at,is,has,been';
-      var ignore = ignoreList.split(',');
+      var ignore = $scope.ignoreList;
       var updateflag = 0;
 
       if (newValue) {
@@ -40,9 +39,7 @@
 
         for (i = 0; i < newValue.length; i++) {
           if (ignore.indexOf(newValue[i].name) < 1) {
-            //if (newValue[i].score > 4 & newValue[i].score < 28) {
             items.push(newValue[i]);
-            //}
           }
         }
         if (updateflag) {
@@ -75,12 +72,27 @@
       restrict: 'E',
       replace: 'true',
       scope: {
-        words: '=',
+        font: '@',
+        ignoreList: '=',
+        padding: '@',
+        rotate: '&',
+        slopeBase: '@',
+        slopeFactor: '@',
+        words: '='
       },
       templateUrl: '/d3-cloud-ng/d3-cloud.html',
       controller: 'd3CloudController',
       controllerAs: 'ctrl',
       link: function($scope, $element, $attrs) {
+        $scope.font = $scope.font || 'Impact';
+        $scope.ignoreList = $scope.ignoreList || [];
+        $scope.padding = $scope.padding || 5;
+        $scope.rotate = $scope.rotate || function() {
+          return ~~(Math.random() * 2) * 90 - 45;
+        };
+        $scope.slopeBase = $scope.slopeBase || 2;
+        $scope.slopeFactor = $scope.slopeFactor || 30;
+
         $scope.createCloud = function(words) {
           var cloudWidth = $element[0].clientWidth + 0;
           var cloudHeight = $element[0].clientWidth + 0;
@@ -99,7 +111,7 @@
           });
 
           if (maxScore !== minScore) {
-            slope = 30 / (maxScore - minScore);
+            slope = $scope.slopeFactor / (maxScore - minScore);
           }
 
           $scope.cloud = d3.layout.cloud().size([cloudWidth, cloudHeight]);
@@ -107,14 +119,12 @@
             .words(words.map(function(d) {
               return {
                 text: d.name,
-                size: d.score * slope + 2
+                size: d.score * slope + $scope.slopeBase
               };
             }))
-            .padding(0)
-            .rotate(function() {
-              return 0; //~~(Math.random() * 2) * 90 - 45;
-            })
-            .font('Impact')
+            .padding($scope.padding)
+            .rotate($scope.rotate)
+            .font($scope.font)
             .fontSize(function(d) {
               return d.size;
             })
@@ -140,7 +150,7 @@
           });
 
           if (maxScore !== minScore) {
-            slope = 30 / (maxScore - minScore);
+            slope = $scope.slopeFactor / (maxScore - minScore);
           }
 
           $scope.cloud = d3.layout.cloud().size([cloudWidth, cloudHeight]);
@@ -148,14 +158,12 @@
             .words(words.map(function(d) {
               return {
                 text: d.name,
-                size: d.score * slope + 2
+                size: d.score * slope + $scope.slopeBase
               };
             }))
-            .padding(5)
-            .rotate(function() {
-              return 0; //~~(Math.random() * 2) * 90 - 45;
-            })
-            .font('Impact')
+            .padding($scope.padding)
+            .rotate($scope.rotate)
+            .font($scope.font)
             .fontSize(function(d) {
               return d.size;
             })
@@ -186,7 +194,7 @@
           words.style('font-size', function(d) {
               return d.size + 'px';
             })
-            .style('font-family', 'Impact')
+            .style('font-family', $scope.font)
             .style('fill', function(d, i) {
               return fill(i);
             })
@@ -214,7 +222,7 @@
             .style('font-size', function(d) {
               return d.size + 'px';
             })
-            .style('font-family', 'Impact')
+            .style('font-family', $scope.font)
             .style('fill', function(d, i) {
               return fill(i);
             })
