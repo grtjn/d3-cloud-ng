@@ -14,7 +14,7 @@
       replace: 'true',
       scope: {
         font: '@',
-        ignoreList: '=',
+        ignoreList: '=?',
         padding: '@',
         rotate: '&',
         slopeBase: '@',
