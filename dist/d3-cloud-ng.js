@@ -75,7 +75,7 @@
         font: '@',
         ignoreList: '=?',
         padding: '@',
-        rotate: '&',
+        rotate: '&?',
         slopeBase: '@',
         slopeFactor: '@',
         words: '='
