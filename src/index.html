@@ -18,10 +18,15 @@
     <title>D3 Cloud for Angular</title>
 
     <!-- vendor.min.css is generated using gulp -->
-    <link rel="stylesheet" href="styles/vendor.min.css">
+    <!-- build:css styles/vendor@suffix.css -->
+      <!-- bower:css -->
+      <!-- endbower -->
+    <!-- endbuild -->
     
     <!-- main.min.css is generated using gulp -->
-    <link rel="stylesheet" href="styles/main.min.css">
+    <!-- build:css styles/main@suffix.css -->
+      <link rel="stylesheet/less" type="text/less" href="src/styles/home.less">
+    <!-- endbuild -->
 
     <link rel="help" href="/api">
 
@@ -80,13 +85,19 @@
     <!--ng-include src="'views/footer.html'"></ng-include-->
 
     <!-- vendor.min.js is generated using gulp -->
-    <script src="scripts/vendor.min.js"></script>
+    <!-- build:js scripts/vendor@suffix.js -->
+      <!-- bower:js -->
+      <!-- endbower -->
+    <!-- endbuild -->
     
     <!-- main.min.js is generated using gulp -->
-    <script src="scripts/main.min.js"></script>
+    <!-- build:js scripts/main@suffix.js -->
+      <script src="src/scripts/app.js"></script>
+      <script src="src/scripts/home-ctrl.js"></script>
+    <!-- endbuild -->
     
     <!-- main-tpls.min.js is generated using gulp -->
-    <script src="scripts/main-tpls.min.js"></script>
+    <script src="scripts/main-tpls@suffix.js"></script>
     
   </body>
 </html>
