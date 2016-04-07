@@ -22,7 +22,7 @@
     };
 
     $http
-      .get('data/WordCloud-facets.json')
+      .get('data/WordCloud-facet.json')
       .success(function(response) {
         ctrl.updateCloud(response);
       });
