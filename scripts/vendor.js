@@ -79623,7 +79623,7 @@ var spirals = {
         $scope.ignoreList = $scope.ignoreList || [];
         $scope.padding = $scope.padding || 5;
         $scope.rotate_ = $scope.rotate && function(d, i) {
-          return $scope.rotate($scope.words[i]);
+          return $scope.rotate({word: $scope.words[i]});
         } || function() {
           return ~~(Math.random() * 2) * 90 - 45;
         };

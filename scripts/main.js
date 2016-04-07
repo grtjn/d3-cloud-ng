@@ -64,7 +64,7 @@
 
     ctrl.words = [];
 
-    ctrl.noRotate = function() {
+    ctrl.noRotate = function(word) {
       return 0;
     };
 
