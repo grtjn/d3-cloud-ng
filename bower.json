@@ -1,6 +1,6 @@
 {
   "name": "d3-cloud-ng",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Angular directive wrapping the d3-cloud library",
   "main": [
     "dist/d3-cloud-ng.js",
