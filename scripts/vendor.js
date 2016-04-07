@@ -79699,7 +79699,7 @@ var spirals = {
               };
             }))
             .padding($scope.padding)
-            .rotate($scope.rotate)
+            .rotate($scope.rotate_)
             .font($scope.font)
             .fontSize(function(d) {
               return d.size;

@@ -112,7 +112,7 @@ function SearchCtrl($scope, $location, userService, searchFactory) {
     }
   };
 
-  ctrl.noRotate = function() {
+  ctrl.noRotate = function(word) {
     return 0;
   };
 
@@ -126,7 +126,7 @@ function SearchCtrl($scope, $location, userService, searchFactory) {
                   Add a <code>&lt;d3-cloud&gt;</code> element in your template like so:
                 </p>
                 <pre hljs no-escape language="html">
-&lt;d3-cloud words="ctrl.words" padding="0" rotate="ctrl.noRotate()">&lt;/d3-cloud></pre>
+&lt;d3-cloud words="ctrl.words" padding="0" rotate="ctrl.noRotate(word)">&lt;/d3-cloud></pre>
             </li>
         </ol>
     </div>

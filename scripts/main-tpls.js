@@ -69,12 +69,12 @@ module.run(['$templateCache', function($templateCache) {
     '    }\n' +
     '  };\n' +
     '\n' +
-    '  ctrl.noRotate = function() {\n' +
+    '  ctrl.noRotate = function(word) {\n' +
     '    return 0;\n' +
     '  };\n' +
     '\n' +
     '}\n' +
     '</pre></li><li><p>Add a <code>&lt;d3-cloud&gt;</code> element in your template like so:</p><pre hljs="" no-escape="" language="html">\n' +
-    '&lt;d3-cloud words="ctrl.words" padding="0" rotate="ctrl.noRotate()">&lt;/d3-cloud></pre></li></ol></div></div>');
+    '&lt;d3-cloud words="ctrl.words" padding="0" rotate="ctrl.noRotate(word)">&lt;/d3-cloud></pre></li></ol></div></div>');
 }]);
 })();
