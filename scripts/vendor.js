@@ -79622,7 +79622,7 @@ var spirals = {
         $scope.font = $scope.font || 'Impact';
         $scope.ignoreList = $scope.ignoreList || [];
         $scope.padding = $scope.padding || 5;
-        $scope.rotate = $scope.rotate && function(d, i) {
+        $scope.rotate_ = $scope.rotate && function(d, i) {
           return $scope.rotate($scope.words[i]);
         } || function() {
           return ~~(Math.random() * 2) * 90 - 45;
@@ -79660,7 +79660,7 @@ var spirals = {
               };
             }))
             .padding($scope.padding)
-            .rotate($scope.rotate)
+            .rotate($scope.rotate_)
             .font($scope.font)
             .fontSize(function(d) {
               return d.size;
