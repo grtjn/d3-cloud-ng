@@ -28,7 +28,9 @@
         $scope.font = $scope.font || 'Impact';
         $scope.ignoreList = $scope.ignoreList || [];
         $scope.padding = $scope.padding || 5;
-        $scope.rotate = $scope.rotate || function() {
+        $scope.rotate_ = $scope.rotate && function(d, i) {
+          return $scope.rotate({word: $scope.words[i] });
+        } || function() {
           return ~~(Math.random() * 2) * 90 - 45;
         };
         $scope.slopeBase = $scope.slopeBase || 2;
@@ -64,7 +66,7 @@
               };
             }))
             .padding($scope.padding)
-            .rotate($scope.rotate)
+            .rotate($scope.rotate_)
             .font($scope.font)
             .fontSize(function(d) {
               return d.size;
@@ -103,7 +105,7 @@
               };
             }))
             .padding($scope.padding)
-            .rotate($scope.rotate)
+            .rotate($scope.rotate_)
             .font($scope.font)
             .fontSize(function(d) {
               return d.size;
