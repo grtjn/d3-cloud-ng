@@ -6,7 +6,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/home.html',
-    '<h1 class="page-header" itemprop="name">D3 Cloud for Angular</h1><div class="home row"><h4>Key features</h4><ul><li>Use D3 Cloud within Angular context</li><li>Show any word-score combinations easily</li><li>Tweak font, padding, scale and slope with simple config</li><li>Custom rotation per word</li></ul><h4>Example</h4><div class="row"><div class="col-md-10 col-md-offset-1"><d3-cloud words="ctrl.words" padding="0" rotate="ctrl.noRotate(word)"></d3-cloud></div></div><div style="display:none">{{ctrl.words}}</div></div>');
+    '<h1 class="page-header" itemprop="name">D3 Cloud for Angular</h1><div class="home row"><h4>Key features</h4><ul><li>Use D3 Cloud within Angular context</li><li>Show any word-score combinations easily</li><li>Tweak font, padding, scale and slope with simple config</li><li>Custom rotation per word</li></ul><h4>Example</h4><div class="row"><div class="col-md-6 col-md-offset-3"><d3-cloud words="ctrl.words" padding="0" rotate="ctrl.noRotate(word)"></d3-cloud></div></div><div style="display:none">{{ctrl.words}}</div></div>');
 }]);
 })();
 
