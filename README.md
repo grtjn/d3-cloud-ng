@@ -41,11 +41,24 @@ Assuming a project generated with `slush-marklogic-node`, or some other project 
     ctrl.noRotate = function(word) {
       return 0;
     };
+    
+    ctrl.cloudEvents = {
+      'dblclick': function(tag) {
+        // stop propagation
+        d3.event.stopPropagation();
+        
+        // undo default behavior of browsers to select at dblclick
+        window.getSelection().collapse(tag,0);
+        
+        // custom behavior, for instance search on dblclick
+        ctrl.search((ctrl.qtext ? ctrl.qtext + ' ' : '') + tag.text.toLowerCase());
+      }
+    };
 
 The above also assumes you have defined a search range constraint called `TagCloud` with the `facet=true` option. But you can also just feed the `<d3-cloud>` directive with an array of `{name:.., score:..}` objects.
 
 Add for instance the following to your `search.html`:
 
-    <d3-cloud words="ctrl.words" padding="0" rotate="ctrl.noRotate(word)"></d3-cloud>
+    <d3-cloud words="ctrl.words" padding="0" rotate="ctrl.noRotate(word)" events="ctrl.cloudEvents"></d3-cloud>
 
 And to finish off, enable the d3.cloud module, by adding it as dependency to your app, or the module in which you want to use it.

@@ -13,6 +13,7 @@
       restrict: 'E',
       replace: 'true',
       scope: {
+        events: '=?',
         font: '@',
         ignoreList: '=?',
         padding: '@',
@@ -25,6 +26,7 @@
       controller: 'd3CloudController',
       controllerAs: 'ctrl',
       link: function($scope, $element, $attrs) {
+        $scope.events = $scope.events || {};
         $scope.font = $scope.font || 'Impact';
         $scope.ignoreList = $scope.ignoreList || [];
         $scope.padding = $scope.padding || 5;
@@ -145,6 +147,7 @@
             .attr('transform', function(d) {
               return 'translate(' + [d.x, d.y] + ')rotate(' + d.rotate + ')';
             })
+            .on($scope.events)
             .text(function(d) {
               return d.text;
             });
@@ -173,6 +176,7 @@
             .attr('transform', function(d) {
               return 'translate(' + [d.x, d.y] + ')rotate(' + d.rotate + ')';
             })
+            .on($scope.events)
             .text(function(d) {
               return d.text;
             });
