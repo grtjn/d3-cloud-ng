@@ -78,10 +78,11 @@ module.run(['$templateCache', function($templateCache) {
     '    \'dblclick\': function(tag) {\n' +
     '      // stop propagation\n' +
     '      d3.event.stopPropagation();\n' +
-    '      \n' +
+    '\n' +
     '      // undo default behavior of browsers to select at dblclick\n' +
-    '      window.getSelection().collapse(tag,0);\n' +
-    '      \n' +
+    '      var body = document.getElementsByTagName(\'body\')[0];\n' +
+    '      window.getSelection().collapse(body,0);\n' +
+    '\n' +
     '      // custom behavior, for instance search on dblclick\n' +
     '      ctrl.search((ctrl.qtext ? ctrl.qtext + \' \' : \'\') + tag.text.toLowerCase());\n' +
     '    }\n' +
