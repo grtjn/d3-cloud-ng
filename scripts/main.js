@@ -90,7 +90,8 @@
         d3.event.stopPropagation();
         
         // undo default behavior of browsers to select at dblclick
-        window.getSelection().collapse(tag,0);
+        var body = document.getElementsByTagName('body')[0];
+        window.getSelection().collapse(body,0);
         
         // custom behavior
         window.alert('Clicked ' + tag.text);
