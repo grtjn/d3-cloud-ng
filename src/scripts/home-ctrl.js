@@ -37,6 +37,19 @@
       }
     };
 
+    ctrl.cloudEvents = {
+      'dblclick': function(tag) {
+        // stop propagation
+        d3.event.stopPropagation();
+        
+        // undo default behavior of browsers to select at dblclick
+        window.getSelection().collapse(tag,0);
+        
+        // custom behavior
+        window.alert('Clicked ' + tag.text);
+      }
+    };
+
   }
 
 }());

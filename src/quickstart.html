@@ -117,6 +117,19 @@ function SearchCtrl($scope, $location, userService, searchFactory) {
     return 0;
   };
 
+  ctrl.cloudEvents = {
+    'dblclick': function(tag) {
+      // stop propagation
+      d3.event.stopPropagation();
+      
+      // undo default behavior of browsers to select at dblclick
+      window.getSelection().collapse(tag,0);
+      
+      // custom behavior, for instance search on dblclick
+      ctrl.search((ctrl.qtext ? ctrl.qtext + ' ' : '') + tag.text.toLowerCase());
+    }
+  };
+
 }
 </pre>
             </li>
@@ -127,7 +140,7 @@ function SearchCtrl($scope, $location, userService, searchFactory) {
                   Add a <code>&lt;d3-cloud&gt;</code> element in your template like so:
                 </p>
                 <pre hljs no-escape language="html">
-&lt;d3-cloud words="ctrl.words" padding="0" rotate="ctrl.noRotate(word)">&lt;/d3-cloud></pre>
+&lt;d3-cloud words="ctrl.words" padding="0" rotate="ctrl.noRotate(word)" events="ctrl.cloudEvents">&lt;/d3-cloud></pre>
             </li>
         </ol>
     </div>
