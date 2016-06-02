@@ -123,7 +123,7 @@
         function update(data) {
           var size = $scope.cloud.size();
           var fill = d3.scale.category20();
-          var words = d3.select('.cloud').select('svg')
+          var words = d3.select($element[0]).select('svg')
             .selectAll('g')
             .attr('transform', 'translate('+size[0]/2+','+size[1]/2+')')
             .selectAll('text')
@@ -157,7 +157,7 @@
         function draw(words) {
           var size = $scope.cloud.size();
           var fill = d3.scale.category20();
-          d3.select('.cloud').append('svg')
+          d3.select($element[0]).append('svg')
             .attr('width', size[0])
             .attr('height', size[1])
             .append('g')
