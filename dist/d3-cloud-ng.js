@@ -23,34 +23,38 @@
       var updateflag = 0;
 
       if (newValue) {
-        if (oldValue) {
-          if (oldValue.length !== newValue.length) {
-            updateflag = 1;
-          } else {
-            for (i = 0; i < newValue.length; i++) {
-              if (!updateflag & newValue[i].name !== oldValue[i].name & newValue[i].score !== oldValue[i].score) {
-                updateflag = 1;
-              }
-            }
-          }
-        } else {
-          updateflag = 1;
-        }
-
         for (i = 0; i < newValue.length; i++) {
           if (ignore.indexOf(newValue[i].name) < 1) {
             items.push(newValue[i]);
           }
         }
-        if (updateflag) {
-          if ($scope.cloud) {
-            $scope.updateCloud(items);
+
+        if ($scope.cloud) {
+          if (oldValue) {
+            if (oldValue.length !== newValue.length) {
+              updateflag = 1;
+            } else {
+              for (i = 0; i < newValue.length; i++) {
+                if (!updateflag & newValue[i].name !== oldValue[i].name & newValue[i].score !== oldValue[i].score) {
+                  updateflag = 1;
+                }
+              }
+            }
           } else {
-            $scope.createCloud(items);
+            updateflag = 1;
           }
+
+          if (updateflag) {
+            // only update if changed
+            $scope.updateCloud(items);
+          }
+        } else {
+          // create from scratch
+          $scope.createCloud(items);
         }
       } else if ($scope.cloud) {
-        $scope.updateCloud(items);
+        // flush existing words
+        $scope.updateCloud([]);
       }
 
     });
@@ -88,14 +92,15 @@
         $scope.events = $scope.events || {};
         $scope.font = $scope.font || 'Impact';
         $scope.ignoreList = $scope.ignoreList || [];
-        $scope.padding = $scope.padding || 5;
-        $scope.rotate_ = $scope.rotate && function(d, i) {
+
+        var padding = $attrs.padding ? Number($scope.padding) : 5;
+        var rotate = $scope.rotate && function(d, i) {
           return $scope.rotate({word: $scope.words[i] });
         } || function() {
           return ~~(Math.random() * 2) * 90 - 45;
         };
-        $scope.slopeBase = $scope.slopeBase || 2;
-        $scope.slopeFactor = $scope.slopeFactor || 30;
+        var slopeBase = $attrs.slopeBase ? Number($scope.slopeBase) : 2;
+        var slopeFactor = $attrs.slopeFactor ? Number($scope.slopeFactor) : 30;
 
         $scope.createCloud = function(words) {
           var cloudWidth = $element[0].clientWidth + 0;
@@ -115,7 +120,7 @@
           });
 
           if (maxScore !== minScore) {
-            slope = $scope.slopeFactor / (maxScore - minScore);
+            slope = slopeFactor / (maxScore - minScore);
           }
 
           $scope.cloud = d3.layout.cloud().size([cloudWidth, cloudHeight]);
@@ -123,11 +128,11 @@
             .words(words.map(function(d) {
               return {
                 text: d.name,
-                size: d.score * slope + $scope.slopeBase
+                size: d.score * slope + slopeBase
               };
             }))
-            .padding($scope.padding)
-            .rotate($scope.rotate_)
+            .padding(padding)
+            .rotate(rotate)
             .font($scope.font)
             .fontSize(function(d) {
               return d.size;
@@ -154,7 +159,7 @@
           });
 
           if (maxScore !== minScore) {
-            slope = $scope.slopeFactor / (maxScore - minScore);
+            slope = slopeFactor / (maxScore - minScore);
           }
 
           $scope.cloud = d3.layout.cloud().size([cloudWidth, cloudHeight]);
@@ -162,11 +167,11 @@
             .words(words.map(function(d) {
               return {
                 text: d.name,
-                size: d.score * slope + $scope.slopeBase
+                size: d.score * slope + slopeBase
               };
             }))
-            .padding($scope.padding)
-            .rotate($scope.rotate_)
+            .padding(padding)
+            .rotate(rotate)
             .font($scope.font)
             .fontSize(function(d) {
               return d.size;
