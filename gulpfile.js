@@ -17,7 +17,10 @@ var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     minifyCss = require('gulp-cssnano'),
     sourcemaps = require('gulp-sourcemaps'),
-    info = require('gulp-print');
+    info = require('gulp-print'),
+    rm = require('gulp-rm'),
+    ghpages = require('gulp-gh-pages'),
+    cp = require('child_process');
 
 gulp.task('jshint', function() {
   return gulp.src([
@@ -118,6 +121,24 @@ gulp.task('autotest', function() {
     console.log('Karma has exited with ' + exitCode);
     //process.exit(exitCode);
   });
+});
+
+gulp.task('docs', function() {
+  cp.exec('./node_modules/.bin/jsdoc -c jsdoc.conf.json', function(err) {
+    if (err) {
+      return console.log(err);
+    }
+  });
+});
+
+gulp.task('clean-docs', function() {
+  return gulp.src('./docs/api/**/*', { read: false })
+  .pipe(rm({async: false}));
+});
+
+gulp.task('publish-docs', function() {
+  return gulp.src([ './docs/**/*.*' ])
+  .pipe(ghpages({ remove: false }));
 });
 
 gulp.task('default', ['styles']);
