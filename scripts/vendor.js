@@ -95838,6 +95838,28 @@ var spirals = {
   }
 })();
 
+ /**
+  * @ngdoc directive
+  * @memberOf 'd3.cloud'
+  * @name d3-cloud
+  * @description
+  *   Angular directive wrapping the d3-cloud library.
+  *
+  * @attr {Object}    events        Optional. An object with a property for each event callback function to be supported. Default: {}.
+  * @attr {String}    font          Optional. The name of the font to use. Default: Impact.
+  * @attr {Array}     ignoreList    Optional. An array of word names to ignore. Default: [].
+  * @attr {Integer}   padding       Optional. The padding to apply between words. Default: 5.
+  * @attr {Function}  rotate        Optional. A function reference that calculates rotation per word. Takes word object, and index in 'words' array. Default: alternating 45 degree left/right.
+  * @attr {Integer}   slope-base    Optional. The minimum size for words. Default: 2.
+  * @attr {Integer}   slope-factor  Optional. The scale factor applied to scores. Default: 30.
+  * @attr {Array}     words         A binding to an array of objects with name and score properties.
+  *
+  * @example
+  *   <d3-cloud events="ctrl.wordEvents" font="Impact" ignoreList="ctrl.ignoreWords" padding="5"
+  *     rotate="ctrl.rotateWord" slope-base="2" slope-factor="30" words="ctrl.words">
+  *   </d3-cloud>
+  */
+
 /* global d3 */
 (function() {
 
@@ -95862,7 +95884,7 @@ var spirals = {
         slopeFactor: '@',
         words: '='
       },
-      templateUrl: '/d3-cloud-ng/d3-cloud.html',
+      templateUrl: function() { return '/d3-cloud-ng/d3-cloud.html'; },
       controller: 'd3CloudController',
       controllerAs: 'ctrl',
       link: function($scope, $element, $attrs) {
@@ -95963,7 +95985,7 @@ var spirals = {
 
         function update(data) {
           var size = $scope.cloud.size();
-          var fill = d3.scale.category20();
+          var fill = (d3.schemeCategory20 ? d3.schemeCategory20() : d3.scale.category20());
           var words = d3.select($element[0]).select('svg')
             .selectAll('g')
             .attr('transform', 'translate('+size[0]/2+','+size[1]/2+')')
@@ -95997,7 +96019,7 @@ var spirals = {
 
         function draw(words) {
           var size = $scope.cloud.size();
-          var fill = d3.scale.category20();
+          var fill = (d3.schemeCategory20 ? d3.schemeCategory20() : d3.scale.category20());
           d3.select($element[0]).append('svg')
             .attr('width', size[0])
             .attr('height', size[1])
