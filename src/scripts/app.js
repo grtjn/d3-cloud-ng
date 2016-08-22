@@ -40,6 +40,14 @@
         resolve: {
         }
       })
+      .state('api', {
+        url: '/api',
+        controller: 'd3CloudNgDemo.HomeCtrl',
+        controllerAs: 'ctrl',
+        templateUrl: '/api/index.html',
+        resolve: {
+        }
+      })
     ;
       
   }
