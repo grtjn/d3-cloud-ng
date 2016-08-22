@@ -1,5 +1,28 @@
 # Change Log
 
+## [0.9.6](https://github.com/grtjn/d3-cloud-ng/tree/0.9.6) (2016-08-22)
+[Full Changelog](https://github.com/grtjn/d3-cloud-ng/compare/0.9.5...0.9.6)
+
+**Fixed bugs:**
+
+- Document how to control the size of the tag cloud [\#10](https://github.com/grtjn/d3-cloud-ng/issues/10)
+- Latest version of d3 breaks d3-cloud-nd [\#9](https://github.com/grtjn/d3-cloud-ng/issues/9)
+
+## [0.9.5](https://github.com/grtjn/d3-cloud-ng/tree/0.9.5) (2016-06-16)
+[Full Changelog](https://github.com/grtjn/d3-cloud-ng/compare/0.9.4...0.9.5)
+
+**Fixed bugs:**
+
+- Cloud not repainting if words seem unchanged [\#8](https://github.com/grtjn/d3-cloud-ng/issues/8)
+- Padding, slope-base, and slope-factor not properly handled as numeric values [\#7](https://github.com/grtjn/d3-cloud-ng/issues/7)
+
+## [0.9.4](https://github.com/grtjn/d3-cloud-ng/tree/0.9.4) (2016-06-02)
+[Full Changelog](https://github.com/grtjn/d3-cloud-ng/compare/0.9.3...0.9.4)
+
+**Fixed bugs:**
+
+- Cannot display multiple clouds on a single page [\#6](https://github.com/grtjn/d3-cloud-ng/issues/6)
+
 ## [0.9.3](https://github.com/grtjn/d3-cloud-ng/tree/0.9.3) (2016-04-14)
 [Full Changelog](https://github.com/grtjn/d3-cloud-ng/compare/0.9.2...0.9.3)
 
