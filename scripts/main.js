@@ -44,7 +44,7 @@
         url: '/api',
         controller: 'd3CloudNgDemo.HomeCtrl',
         controllerAs: 'ctrl',
-        templateUrl: 'api/index.html',
+        templateUrl: '/api.html',
         resolve: {
         }
       })

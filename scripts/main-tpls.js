@@ -5,6 +5,18 @@ try {
   module = angular.module('d3CloudNgDemo.Tpls', []);
 }
 module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/api.html',
+    '<iframe src="api/"></iframe>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('d3CloudNgDemo.Tpls');
+} catch (e) {
+  module = angular.module('d3CloudNgDemo.Tpls', []);
+}
+module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/home.html',
     '<h1 class="page-header" itemprop="name">D3 Cloud for Angular</h1><div class="home row"><h4>Key features</h4><ul><li>Use D3 Cloud within Angular context</li><li>Show any word-score combinations easily</li><li>Tweak font, padding, scale and slope with simple config</li><li>Customizable rotation per word</li><li>Customizable mouse click handling</li></ul><h4>Example</h4><div class="row"><div class="col-md-4 col-md-offset-1"><p>Try double-clicking words</p><d3-cloud words="ctrl.words" padding="0" rotate="ctrl.noRotate(word)" events="ctrl.cloudEvents"></d3-cloud></div></div><div style="display:none">{{ctrl.words}}</div></div>');
 }]);
