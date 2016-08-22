@@ -6,7 +6,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/api.html',
-    '<iframe src="api/"></iframe>');
+    '<iframe src="api/" style="width: 100%; height: 90%; border: none; margin: 0; padding: 0; position: fixed; top: 52px; left: 0px; bottom: 0px; right: 0px;"></iframe>');
 }]);
 })();
 
