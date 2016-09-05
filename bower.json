@@ -29,7 +29,8 @@
     "angular",
     "angularjs",
     "d3",
-    "d3-cloud"
+    "d3-cloud",
+    "marklogic"
   ],
   "license": "Apache-2.0",
   "ignore": [

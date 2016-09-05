@@ -1,6 +1,6 @@
 {
   "opts": {
-    "readme": "README.md",
+    "readme": "API-README.md",
     "recurse": true,
     "template": "node_modules/angular-jsdoc/angular-template",
     "encoding": "utf8",
