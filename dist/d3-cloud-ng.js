@@ -57,7 +57,7 @@
         $scope.updateCloud([]);
       }
 
-    });
+    }, true);
   }
 })();
 
