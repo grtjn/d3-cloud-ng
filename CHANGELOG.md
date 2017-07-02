@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.9.7](https://github.com/grtjn/d3-cloud-ng/tree/0.9.7) (2017-07-02)
+[Full Changelog](https://github.com/grtjn/d3-cloud-ng/compare/0.9.6...0.9.7)
+
+**Fixed bugs:**
+
+- Cloud update after words\[\] updated [\#13](https://github.com/grtjn/d3-cloud-ng/issues/13)
+
 ## [0.9.6](https://github.com/grtjn/d3-cloud-ng/tree/0.9.6) (2016-08-22)
 [Full Changelog](https://github.com/grtjn/d3-cloud-ng/compare/0.9.5...0.9.6)
 
