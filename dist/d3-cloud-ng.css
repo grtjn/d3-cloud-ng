@@ -1,3 +1,7 @@
+.d3-cloud {
+  height: 100%;
+  width: 100%;
+}
 .d3-cloud text {
   cursor: hand;
   cursor: pointer;

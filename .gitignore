@@ -9,3 +9,5 @@ build/
 .publish/
 docs/
 out/
+.idea/
+d3-cloud-ng.iml
