@@ -15,16 +15,18 @@
         var updateflag = 0;
 
         if (newValue) {
-          items = $scope.filterFunction($scope.words);
+          for (var i = 0; i< newValue.length; i++) {
+            if ($scope.filter(newValue[i])) {
+              items.push(newValue[i]);
+            }
+          }
           if ($scope.cloud) {
             if (oldValue) {
-              if (oldValue.length !== newValue.length) {
-                updateflag = 1;
-              } else if (items.length > 0) {
+              if (oldValue.length !== items.length) {
                 updateflag = 1;
               } else {
-                for (i = 0; i < newValue.length; i++) {
-                  if (!updateflag & newValue[i].name !== oldValue[i].name & newValue[i].score !== oldValue[i].score) {
+                for (i = 0; i < items.length; i++) {
+                  if (!updateflag & items[i].name !== oldValue[i].name & items[i].score !== oldValue[i].score) {
                     updateflag = 1;
                   }
                 }
