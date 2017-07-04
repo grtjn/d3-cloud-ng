@@ -12,7 +12,7 @@
  * @attr {Function}  rotate        Optional. A function reference that calculates rotation per word. Takes word object, and index in 'words' array. Default: alternating 45 degree left/right.
  * @attr {Integer}   slope-base    Optional. The minimum size for words. Default: 2.
  * @attr {Integer}   slope-factor  Optional. The scale factor applied to scores. Default: 30.
- * @attr {Array}     words         A binding to an array of objects with name and score properties.
+ * @attr {Array}     words         A binding to an array of objects with name, score and optional color properties.
  *
  * @example
  *   <d3-cloud events="ctrl.wordEvents" font="Impact" ignoreList="ctrl.ignoreWords" padding="5"
@@ -86,10 +86,14 @@
             $scope.cloud = d3.layout.cloud().size([cloudWidth, cloudHeight]);
             $scope.cloud
               .words(words.map(function (d) {
-                return {
+                const result = {
                   text: d.name,
                   size: d.score * slope + slopeBase
                 };
+                if (d.color) {
+                  result.color = d.color;
+                }
+                return result;
               }))
               .padding(padding)
               .rotate(rotate)
@@ -125,10 +129,14 @@
             $scope.cloud = d3.layout.cloud().size([cloudWidth, cloudHeight]);
             $scope.cloud
               .words(words.map(function (d) {
-                return {
+                const result = {
                   text: d.name,
                   size: d.score * slope + slopeBase
                 };
+                if (d.color) {
+                  result.color = d.color;
+                }
+                return result;
               }))
               .padding(padding)
               .rotate(rotate)
@@ -165,6 +173,9 @@
             })
               .style('font-family', $scope.font)
               .style('fill', function (d, i) {
+                if (words[i].color) {
+                  return words[i].color;
+                }
                 return fill(i);
               })
               .attr('text-anchor', 'middle')
@@ -194,6 +205,9 @@
               })
               .style('font-family', $scope.font)
               .style('fill', function (d, i) {
+                if (words[i].color) {
+                  return words[i].color;
+                }
                 return fill(i);
               })
               .attr('text-anchor', 'middle')
