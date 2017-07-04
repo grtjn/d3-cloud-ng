@@ -12,19 +12,15 @@
       angular.element(document).ready(function () {
         var i = [];
         var items = [];
-        var ignore = $scope.ignoreList;
         var updateflag = 0;
 
         if (newValue) {
-          for (i = 0; i < newValue.length; i++) {
-            if (!isIgnored(newValue[i], ignore)) {
-              items.push(newValue[i]);
-            }
-          }
-          $scope.words = items;
+          items = $scope.filterFunction($scope.words);
           if ($scope.cloud) {
             if (oldValue) {
               if (oldValue.length !== newValue.length) {
+                updateflag = 1;
+              } else if (items.length > 0) {
                 updateflag = 1;
               } else {
                 for (i = 0; i < newValue.length; i++) {
@@ -36,7 +32,6 @@
             } else {
               updateflag = 1;
             }
-
             if (updateflag) {
               // only update if changed
               $scope.updateCloud(items);
@@ -51,14 +46,5 @@
         }
       });
     }, true);
-    function isIgnored(newValue, ignoredObjects) {
-      var ignored = false;
-      ignoredObjects.forEach(function (ignoredObject) {
-        if (ignoredObject.name === newValue.name && ignoredObject.score === newValue.score && ignoredObject.color === newValue.color) {
-          ignored = true;
-        }
-      });
-      return ignored;
-    }
   }
 })();
