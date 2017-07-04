@@ -12,23 +12,21 @@
       angular.element(document).ready(function () {
         var i = [];
         var items = [];
-        var ignore = $scope.ignoreList;
         var updateflag = 0;
 
         if (newValue) {
-          for (i = 0; i < newValue.length; i++) {
-            if (!isIgnored(newValue[i], ignore)) {
+          for (var i = 0; i< newValue.length; i++) {
+            if ($scope.filter(newValue[i])) {
               items.push(newValue[i]);
             }
           }
-          $scope.words = items;
           if ($scope.cloud) {
             if (oldValue) {
-              if (oldValue.length !== newValue.length) {
+              if (oldValue.length !== items.length) {
                 updateflag = 1;
               } else {
-                for (i = 0; i < newValue.length; i++) {
-                  if (!updateflag & newValue[i].name !== oldValue[i].name & newValue[i].score !== oldValue[i].score) {
+                for (i = 0; i < items.length; i++) {
+                  if (!updateflag & items[i].name !== oldValue[i].name & items[i].score !== oldValue[i].score) {
                     updateflag = 1;
                   }
                 }
@@ -36,7 +34,6 @@
             } else {
               updateflag = 1;
             }
-
             if (updateflag) {
               // only update if changed
               $scope.updateCloud(items);
@@ -51,14 +48,5 @@
         }
       });
     }, true);
-    function isIgnored(newValue, ignoredObjects) {
-      var ignored = false;
-      ignoredObjects.forEach(function (ignoredObject) {
-        if (ignoredObject.name === newValue.name && ignoredObject.score === newValue.score && ignoredObject.color === newValue.color) {
-          ignored = true;
-        }
-      });
-      return ignored;
-    }
   }
 })();

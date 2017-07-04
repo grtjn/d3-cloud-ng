@@ -5,17 +5,18 @@
  * @description
  *   Angular directive wrapping the d3-cloud library.
  *
- * @attr {Object}    events        Optional. An object with a property for each event callback function to be supported. Default: {}.
- * @attr {String}    font          Optional. The name of the font to use. Default: Impact.
- * @attr {Array}     ignoreList    Optional. An array of word names to ignore. Default: [].
- * @attr {Integer}   padding       Optional. The padding to apply between words. Default: 5.
- * @attr {Function}  rotate        Optional. A function reference that calculates rotation per word. Takes word object, and index in 'words' array. Default: alternating 45 degree left/right.
- * @attr {Integer}   slope-base    Optional. The minimum size for words. Default: 2.
- * @attr {Integer}   slope-factor  Optional. The scale factor applied to scores. Default: 30.
- * @attr {Array}     words         A binding to an array of objects with name and score properties.
+ * @attr {Object}    events       Optional. An object with a property for each event callback function to be supported. Default: {}.
+ * @attr {Function}  filter       Optional. A function that filters words. Takes words array and returns array of words which will be displayed. Default: returns array from parameter.
+ * @attr {String}    font         Optional. The name of the font to use. Default: Impact.
+ * @attr {Array}     ignoreList   Deprecated. Optional. An array of word names to ignore. Default: [].
+ * @attr {Integer}   padding      Optional. The padding to apply between words. Default: 5.
+ * @attr {Function}  rotate       Optional. A function reference that calculates rotation per word. Takes word object, and index in 'words' array. Default: alternating 45 degree left/right.
+ * @attr {Integer}   slope-base   Optional. The minimum size for words. Default: 2.
+ * @attr {Integer}   slope-factor Optional. The scale factor applied to scores. Default: 30.
+ * @attr {Array}     words        A binding to an array of objects with name, score and optional color properties.
  *
  * @example
- *   <d3-cloud events="ctrl.wordEvents" font="Impact" ignoreList="ctrl.ignoreWords" padding="5"
+ *   <d3-cloud events="ctrl.wordEvents" font="Impact" filter="ctrl.filter" padding="5"
  *     rotate="ctrl.rotateWord" slope-base="2" slope-factor="30" words="ctrl.words">
  *   </d3-cloud>
  */
@@ -26,11 +27,11 @@
   'use strict';
 
   angular.module('d3.cloud')
-    .directive('d3Cloud', d3CloudDirective);
+    .directive('d3Cloud', ['$log', d3CloudDirective]);
 
   d3CloudDirective.$inject = [];
 
-  function d3CloudDirective() {
+  function d3CloudDirective($log) {
     return {
       restrict: 'E',
       replace: 'true',
@@ -38,6 +39,7 @@
         events: '=?',
         font: '@',
         ignoreList: '=?',
+        filter: '&?',
         padding: '@',
         rotate: '&?',
         slopeBase: '@',
@@ -54,6 +56,12 @@
           $scope.events = $scope.events || {};
           $scope.font = $scope.font || 'Impact';
           $scope.ignoreList = $scope.ignoreList || [];
+          if ($scope.ignoreList.length > 0) {
+            $log.warn('You are using deprecated ignoreList. Please use custom filter function instead.');
+          }
+          $scope.filter = $scope.filter || function (word) {
+            return $scope.ignoreList.indexOf(word.name) === -1;
+          };
           var padding = $attrs.padding ? Number($scope.padding) : 5;
           var rotate = $scope.rotate && function (d, i) {
               return $scope.rotate({word: $scope.words[i]});
@@ -86,10 +94,14 @@
             $scope.cloud = d3.layout.cloud().size([cloudWidth, cloudHeight]);
             $scope.cloud
               .words(words.map(function (d) {
-                return {
+                var result = {
                   text: d.name,
                   size: d.score * slope + slopeBase
                 };
+                if (d.color) {
+                  result.color = d.color;
+                }
+                return result;
               }))
               .padding(padding)
               .rotate(rotate)
@@ -103,8 +115,8 @@
 
           $scope.updateCloud = function (words) {
 
-            var cloudHeight = $element[0].clientHeight;
-            var cloudWidth = $element[0].clientWidth;
+            var cloudHeight = $element[0].clientHeight + 0;
+            var cloudWidth = $element[0].clientWidth + 0;
             var minScore = 0;
             var maxScore = 1;
             var slope = 1;
@@ -125,10 +137,14 @@
             $scope.cloud = d3.layout.cloud().size([cloudWidth, cloudHeight]);
             $scope.cloud
               .words(words.map(function (d) {
-                return {
+                var result = {
                   text: d.name,
                   size: d.score * slope + slopeBase
                 };
+                if (d.color) {
+                  result.color = d.color;
+                }
+                return result;
               }))
               .padding(padding)
               .rotate(rotate)
@@ -165,6 +181,9 @@
             })
               .style('font-family', $scope.font)
               .style('fill', function (d, i) {
+                if (data[i].color) {
+                  return data[i].color;
+                }
                 return fill(i);
               })
               .attr('text-anchor', 'middle')
@@ -194,6 +213,9 @@
               })
               .style('font-family', $scope.font)
               .style('fill', function (d, i) {
+                if (words[i].color) {
+                  return words[i].color;
+                }
                 return fill(i);
               })
               .attr('text-anchor', 'middle')
