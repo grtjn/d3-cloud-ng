@@ -6,7 +6,7 @@
  *   Angular directive wrapping the d3-cloud library.
  *
  * @attr {Object}    events       Optional. An object with a property for each event callback function to be supported. Default: {}.
- * @attr {Function}  filter       Optional. A function that filters words. Takes words array and returns array of words which will be displayed. Default: returns array from parameter.
+ * @attr {Function}  filter       Optional. A function that filters words. Takes word object and returns true if word should be shown otherwise returns false.
  * @attr {String}    font         Optional. The name of the font to use. Default: Impact.
  * @attr {Array}     ignoreList   Deprecated. Optional. An array of word names to ignore. Default: [].
  * @attr {Integer}   padding      Optional. The padding to apply between words. Default: 5.
