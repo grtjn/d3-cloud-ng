@@ -1,5 +1,22 @@
 # Change Log
 
+## [0.9.8](https://github.com/grtjn/d3-cloud-ng/tree/0.9.8) (2017-07-07)
+[Full Changelog](https://github.com/grtjn/d3-cloud-ng/compare/0.9.7...0.9.8)
+
+**Implemented enhancements:**
+
+- Add support for optional color per word [\#18](https://github.com/grtjn/d3-cloud-ng/issues/18)
+- Add filter feature [\#16](https://github.com/grtjn/d3-cloud-ng/issues/16)
+
+**Fixed bugs:**
+
+- Check for changes looks at newValue, not items [\#17](https://github.com/grtjn/d3-cloud-ng/issues/17)
+- Apply default width/height [\#15](https://github.com/grtjn/d3-cloud-ng/issues/15)
+
+**Merged pull requests:**
+
+- add styles to d3-cloud to fit container height and width and fix problem with ignored list [\#14](https://github.com/grtjn/d3-cloud-ng/pull/14) ([vaclavpavlicek](https://github.com/vaclavpavlicek))
+
 ## [0.9.7](https://github.com/grtjn/d3-cloud-ng/tree/0.9.7) (2017-07-02)
 [Full Changelog](https://github.com/grtjn/d3-cloud-ng/compare/0.9.6...0.9.7)
 
