@@ -88661,7 +88661,7 @@ module.exports = function() {
         cloudSprite(contextAndRatio, d, data, i);
         if (d.hasText && place(board, d, bounds)) {
           tags.push(d);
-          event.word(d);
+          event.call("word", cloud, d);
           if (bounds) cloudBounds(bounds, d);
           else bounds = [{x: d.x + d.x0, y: d.y + d.y0}, {x: d.x + d.x1, y: d.y + d.y1}];
           // Temporary hack
@@ -88671,7 +88671,7 @@ module.exports = function() {
       }
       if (i >= n) {
         cloud.stop();
-        event.end(tags, bounds);
+        event.call("end", cloud, tags, bounds);
       }
     }
   }
@@ -88998,107 +88998,102 @@ var spirals = {
 };
 
 },{"d3-dispatch":2}],2:[function(require,module,exports){
+// https://d3js.org/d3-dispatch/ Version 1.0.2. Copyright 2016 Mike Bostock.
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  factory((global.dispatch = {}));
-}(this, function (exports) { 'use strict';
+  (factory((global.d3 = global.d3 || {})));
+}(this, (function (exports) { 'use strict';
 
-  function Dispatch(types) {
-    var i = -1,
-        n = types.length,
-        callbacksByType = {},
-        callbackByName = {},
-        type,
-        that = this;
+var noop = {value: function() {}};
 
-    that.on = function(type, callback) {
-      type = parseType(type);
+function dispatch() {
+  for (var i = 0, n = arguments.length, _ = {}, t; i < n; ++i) {
+    if (!(t = arguments[i] + "") || (t in _)) throw new Error("illegal type: " + t);
+    _[t] = [];
+  }
+  return new Dispatch(_);
+}
 
-      // Return the current callback, if any.
-      if (arguments.length < 2) {
-        return (callback = callbackByName[type.name]) && callback.value;
-      }
+function Dispatch(_) {
+  this._ = _;
+}
 
-      // If a type was specified…
-      if (type.type) {
-        var callbacks = callbacksByType[type.type],
-            callback0 = callbackByName[type.name],
-            i;
+function parseTypenames(typenames, types) {
+  return typenames.trim().split(/^|\s+/).map(function(t) {
+    var name = "", i = t.indexOf(".");
+    if (i >= 0) name = t.slice(i + 1), t = t.slice(0, i);
+    if (t && !types.hasOwnProperty(t)) throw new Error("unknown type: " + t);
+    return {type: t, name: name};
+  });
+}
 
-        // Remove the current callback, if any, using copy-on-remove.
-        if (callback0) {
-          callback0.value = null;
-          i = callbacks.indexOf(callback0);
-          callbacksByType[type.type] = callbacks = callbacks.slice(0, i).concat(callbacks.slice(i + 1));
-          delete callbackByName[type.name];
-        }
+Dispatch.prototype = dispatch.prototype = {
+  constructor: Dispatch,
+  on: function(typename, callback) {
+    var _ = this._,
+        T = parseTypenames(typename + "", _),
+        t,
+        i = -1,
+        n = T.length;
 
-        // Add the new callback, if any.
-        if (callback) {
-          callback = {value: callback};
-          callbackByName[type.name] = callback;
-          callbacks.push(callback);
-        }
-      }
+    // If no callback was specified, return the callback of the given type and name.
+    if (arguments.length < 2) {
+      while (++i < n) if ((t = (typename = T[i]).type) && (t = get(_[t], typename.name))) return t;
+      return;
+    }
 
-      // Otherwise, if a null callback was specified, remove all callbacks with the given name.
-      else if (callback == null) {
-        for (var otherType in callbacksByType) {
-          if (callback = callbackByName[otherType + type.name]) {
-            callback.value = null;
-            var callbacks = callbacksByType[otherType], i = callbacks.indexOf(callback);
-            callbacksByType[otherType] = callbacks.slice(0, i).concat(callbacks.slice(i + 1));
-            delete callbackByName[callback.name];
-          }
-        }
-      }
-
-      return that;
-    };
-
+    // If a type was specified, set the callback for the given type and name.
+    // Otherwise, if a null callback was specified, remove callbacks of the given name.
+    if (callback != null && typeof callback !== "function") throw new Error("invalid callback: " + callback);
     while (++i < n) {
-      type = types[i] + "";
-      if (!type || (type in that)) throw new Error("illegal or duplicate type: " + type);
-      callbacksByType[type] = [];
-      that[type] = applier(type);
+      if (t = (typename = T[i]).type) _[t] = set(_[t], typename.name, callback);
+      else if (callback == null) for (t in _) _[t] = set(_[t], typename.name, null);
     }
 
-    function parseType(type) {
-      var i = (type += "").indexOf("."), name = type;
-      if (i >= 0) type = type.slice(0, i); else name += ".";
-      if (type && !callbacksByType.hasOwnProperty(type)) throw new Error("unknown type: " + type);
-      return {type: type, name: name};
-    }
+    return this;
+  },
+  copy: function() {
+    var copy = {}, _ = this._;
+    for (var t in _) copy[t] = _[t].slice();
+    return new Dispatch(copy);
+  },
+  call: function(type, that) {
+    if ((n = arguments.length - 2) > 0) for (var args = new Array(n), i = 0, n, t; i < n; ++i) args[i] = arguments[i + 2];
+    if (!this._.hasOwnProperty(type)) throw new Error("unknown type: " + type);
+    for (t = this._[type], i = 0, n = t.length; i < n; ++i) t[i].value.apply(that, args);
+  },
+  apply: function(type, that, args) {
+    if (!this._.hasOwnProperty(type)) throw new Error("unknown type: " + type);
+    for (var t = this._[type], i = 0, n = t.length; i < n; ++i) t[i].value.apply(that, args);
+  }
+};
 
-    function applier(type) {
-      return function() {
-        var callbacks = callbacksByType[type], // Defensive reference; copy-on-remove.
-            callback,
-            callbackValue,
-            i = -1,
-            n = callbacks.length;
-
-        while (++i < n) {
-          if (callbackValue = (callback = callbacks[i]).value) {
-            callbackValue.apply(this, arguments);
-          }
-        }
-
-        return that;
-      };
+function get(type, name) {
+  for (var i = 0, n = type.length, c; i < n; ++i) {
+    if ((c = type[i]).name === name) {
+      return c.value;
     }
   }
+}
 
-  function dispatch() {
-    return new Dispatch(arguments);
+function set(type, name, callback) {
+  for (var i = 0, n = type.length; i < n; ++i) {
+    if (type[i].name === name) {
+      type[i] = noop, type = type.slice(0, i).concat(type.slice(i + 1));
+      break;
+    }
   }
+  if (callback != null) type.push({name: name, value: callback});
+  return type;
+}
 
-  dispatch.prototype = Dispatch.prototype; // allow instanceof
+exports.dispatch = dispatch;
 
-  exports.dispatch = dispatch;
+Object.defineProperty(exports, '__esModule', { value: true });
 
-}));
+})));
+
 },{}]},{},[1])(1)
 });
 (function () {
@@ -89109,7 +89104,7 @@ var spirals = {
   ]);
 }());
 
-(function() {
+(function () {
 
   'use strict';
 
@@ -89119,26 +89114,24 @@ var spirals = {
   d3CloudController.$inject = ['$scope'];
 
   function d3CloudController($scope) {
-    $scope.$watch('words', function(newValue, oldValue) {
+    $scope.$watch('words', function (newValue, oldValue) {
       var i = [];
       var items = [];
-      var ignore = $scope.ignoreList;
       var updateflag = 0;
 
       if (newValue) {
-        for (i = 0; i < newValue.length; i++) {
-          if (ignore.indexOf(newValue[i].name) < 1) {
+        for (var i = 0; i < newValue.length; i++) {
+          if ($scope.filter(newValue[i])) {
             items.push(newValue[i]);
           }
         }
-
         if ($scope.cloud) {
           if (oldValue) {
-            if (oldValue.length !== newValue.length) {
+            if (oldValue.length !== items.length) {
               updateflag = 1;
             } else {
-              for (i = 0; i < newValue.length; i++) {
-                if (!updateflag & newValue[i].name !== oldValue[i].name & newValue[i].score !== oldValue[i].score) {
+              for (i = 0; i < items.length; i++) {
+                if (!updateflag & items[i].name !== oldValue[i].name & items[i].score !== oldValue[i].score) {
                   updateflag = 1;
                 }
               }
@@ -89146,7 +89139,6 @@ var spirals = {
           } else {
             updateflag = 1;
           }
-
           if (updateflag) {
             // only update if changed
             $scope.updateCloud(items);
@@ -89159,44 +89151,44 @@ var spirals = {
         // flush existing words
         $scope.updateCloud([]);
       }
-
-    });
+    }, true);
   }
 })();
 
- /**
-  * @ngdoc directive
-  * @memberOf 'd3.cloud'
-  * @name d3-cloud
-  * @description
-  *   Angular directive wrapping the d3-cloud library.
-  *
-  * @attr {Object}    events        Optional. An object with a property for each event callback function to be supported. Default: {}.
-  * @attr {String}    font          Optional. The name of the font to use. Default: Impact.
-  * @attr {Array}     ignoreList    Optional. An array of word names to ignore. Default: [].
-  * @attr {Integer}   padding       Optional. The padding to apply between words. Default: 5.
-  * @attr {Function}  rotate        Optional. A function reference that calculates rotation per word. Takes word object, and index in 'words' array. Default: alternating 45 degree left/right.
-  * @attr {Integer}   slope-base    Optional. The minimum size for words. Default: 2.
-  * @attr {Integer}   slope-factor  Optional. The scale factor applied to scores. Default: 30.
-  * @attr {Array}     words         A binding to an array of objects with name and score properties.
-  *
-  * @example
-  *   <d3-cloud events="ctrl.wordEvents" font="Impact" ignoreList="ctrl.ignoreWords" padding="5"
-  *     rotate="ctrl.rotateWord" slope-base="2" slope-factor="30" words="ctrl.words">
-  *   </d3-cloud>
-  */
+/**
+ * @ngdoc directive
+ * @memberOf 'd3.cloud'
+ * @name d3-cloud
+ * @description
+ *   Angular directive wrapping the d3-cloud library.
+ *
+ * @attr {Object}    events       Optional. An object with a property for each event callback function to be supported. Default: {}.
+ * @attr {Function}  filter       Optional. A function that filters words. Invoked for each word, should return true to retain the word, false to skip. Defaults to comparing against ignoreList for legacy purposes.
+ * @attr {String}    font         Optional. The name of the font to use. Default: Impact.
+ * @attr {Array}     ignoreList   Deprecated. Optional. An array of word names to ignore. Default: [].
+ * @attr {Integer}   padding      Optional. The padding to apply between words. Default: 5.
+ * @attr {Function}  rotate       Optional. A function reference that calculates rotation per word. Takes word object, and index in 'words' array. Default: alternating 45 degree left/right.
+ * @attr {Integer}   slope-base   Optional. The minimum size for words. Default: 2.
+ * @attr {Integer}   slope-factor Optional. The scale factor applied to scores. Default: 30.
+ * @attr {Array}     words        A binding to an array of objects with name, score and optional color properties.
+ *
+ * @example
+ *   <d3-cloud events="ctrl.wordEvents" font="Impact" filter="ctrl.filter" padding="5"
+ *     rotate="ctrl.rotateWord" slope-base="2" slope-factor="30" words="ctrl.words">
+ *   </d3-cloud>
+ */
 
 /* global d3 */
-(function() {
+(function () {
 
   'use strict';
 
   angular.module('d3.cloud')
-    .directive('d3Cloud', d3CloudDirective);
+    .directive('d3Cloud', ['$log', d3CloudDirective]);
 
   d3CloudDirective.$inject = [];
 
-  function d3CloudDirective() {
+  function d3CloudDirective($log) {
     return {
       restrict: 'E',
       replace: 'true',
@@ -89204,38 +89196,45 @@ var spirals = {
         events: '=?',
         font: '@',
         ignoreList: '=?',
+        filter: '&?',
         padding: '@',
         rotate: '&?',
         slopeBase: '@',
         slopeFactor: '@',
         words: '='
       },
-      templateUrl: function() { return '/d3-cloud-ng/d3-cloud.html'; },
+      templateUrl: function () {
+        return '/d3-cloud-ng/d3-cloud.html';
+      },
       controller: 'd3CloudController',
       controllerAs: 'ctrl',
-      link: function($scope, $element, $attrs) {
+      link: function ($scope, $element, $attrs) {
         $scope.events = $scope.events || {};
         $scope.font = $scope.font || 'Impact';
         $scope.ignoreList = $scope.ignoreList || [];
-
+        if ($scope.ignoreList.length > 0) {
+          $log.warn('You are using deprecated ignoreList. Please use custom filter function instead.');
+        }
+        $scope.filter = $scope.filter || function (word) {
+            return $scope.ignoreList.indexOf(word.name) === -1;
+          };
         var padding = $attrs.padding ? Number($scope.padding) : 5;
-        var rotate = $scope.rotate && function(d, i) {
-          return $scope.rotate({word: $scope.words[i] });
-        } || function() {
-          return ~~(Math.random() * 2) * 90 - 45;
-        };
+        var rotate = $scope.rotate && function (d, i) {
+            return $scope.rotate({word: $scope.words[i]});
+          } || function () {
+            return ~~(Math.random() * 2) * 90 - 45;
+          };
         var slopeBase = $attrs.slopeBase ? Number($scope.slopeBase) : 2;
         var slopeFactor = $attrs.slopeFactor ? Number($scope.slopeFactor) : 30;
 
-        $scope.createCloud = function(words) {
+        $scope.createCloud = function (words) {
           var cloudWidth = $element[0].clientWidth + 0;
-          var cloudHeight = $element[0].clientWidth + 0;
-
+          var cloudHeight = $element[0].clientHeight + 0;
           var minScore = 0;
           var maxScore = 1;
           var slope = 1;
 
-          words.map(function(d) {
+          words.map(function (d) {
             if (minScore > d.score) {
               minScore = d.score;
             }
@@ -89250,31 +89249,35 @@ var spirals = {
 
           $scope.cloud = d3.layout.cloud().size([cloudWidth, cloudHeight]);
           $scope.cloud
-            .words(words.map(function(d) {
-              return {
+            .words(words.map(function (d) {
+              var result = {
                 text: d.name,
                 size: d.score * slope + slopeBase
               };
+              if (d.color) {
+                result.color = d.color;
+              }
+              return result;
             }))
             .padding(padding)
             .rotate(rotate)
             .font($scope.font)
-            .fontSize(function(d) {
+            .fontSize(function (d) {
               return d.size;
             })
             .on('end', draw)
             .start();
         };
 
-        $scope.updateCloud = function(words) {
-          var cloudWidth = $element[0].clientWidth + 0;
-          var cloudHeight = $element[0].clientWidth + 0;
+        $scope.updateCloud = function (words) {
 
+          var cloudHeight = $element[0].clientHeight + 0;
+          var cloudWidth = $element[0].clientWidth + 0;
           var minScore = 0;
           var maxScore = 1;
           var slope = 1;
 
-          words.map(function(d) {
+          words.map(function (d) {
             if (minScore > d.score) {
               minScore = d.score;
             }
@@ -89289,16 +89292,20 @@ var spirals = {
 
           $scope.cloud = d3.layout.cloud().size([cloudWidth, cloudHeight]);
           $scope.cloud
-            .words(words.map(function(d) {
-              return {
+            .words(words.map(function (d) {
+              var result = {
                 text: d.name,
                 size: d.score * slope + slopeBase
               };
+              if (d.color) {
+                result.color = d.color;
+              }
+              return result;
             }))
             .padding(padding)
             .rotate(rotate)
             .font($scope.font)
-            .fontSize(function(d) {
+            .fontSize(function (d) {
               return d.size;
             })
             .on('end', update)
@@ -89311,10 +89318,10 @@ var spirals = {
 
         function update(data) {
           var size = $scope.cloud.size();
-          var fill = (d3.schemeCategory20 ? d3.schemeCategory20() : d3.scale.category20());
+          var fill = (d3.schemeCategory20 ? d3.schemeCategory20 : d3.scale.category20());
           var words = d3.select($element[0]).select('svg')
             .selectAll('g')
-            .attr('transform', 'translate('+size[0]/2+','+size[1]/2+')')
+            .attr('transform', 'translate(' + size[0] / 2 + ',' + size[1] / 2 + ')')
             .selectAll('text')
             .data(data);
 
@@ -89325,19 +89332,22 @@ var spirals = {
           // nodes from the 'enter' selection, d3 will add the new
           // nodes to the 'update' selection, thus all of them will
           // be updated here.
-          words.style('font-size', function(d) {
-              return d.size + 'px';
-            })
+          words.style('font-size', function (d) {
+            return d.size + 'px';
+          })
             .style('font-family', $scope.font)
-            .style('fill', function(d, i) {
+            .style('fill', function (d, i) {
+              if (data[i].color) {
+                return data[i].color;
+              }
               return fill(i);
             })
             .attr('text-anchor', 'middle')
-            .attr('transform', function(d) {
+            .attr('transform', function (d) {
               return 'translate(' + [d.x, d.y] + ')rotate(' + d.rotate + ')';
             })
             .on($scope.events)
-            .text(function(d) {
+            .text(function (d) {
               return d.text;
             });
           words.exit().remove(); // new line to remove all unused words
@@ -89345,28 +89355,31 @@ var spirals = {
 
         function draw(words) {
           var size = $scope.cloud.size();
-          var fill = (d3.schemeCategory20 ? d3.schemeCategory20() : d3.scale.category20());
+          var fill = (d3.schemeCategory20 ? d3.schemeCategory20 : d3.scale.category20());
           d3.select($element[0]).append('svg')
             .attr('width', size[0])
             .attr('height', size[1])
             .append('g')
-            .attr('transform', 'translate('+size[0]/2+','+size[1]/2+')')
+            .attr('transform', 'translate(' + size[0] / 2 + ',' + size[1] / 2 + ')')
             .selectAll('text')
             .data(words)
             .enter().append('text')
-            .style('font-size', function(d) {
+            .style('font-size', function (d) {
               return d.size + 'px';
             })
             .style('font-family', $scope.font)
-            .style('fill', function(d, i) {
+            .style('fill', function (d, i) {
+              if (words[i].color) {
+                return words[i].color;
+              }
               return fill(i);
             })
             .attr('text-anchor', 'middle')
-            .attr('transform', function(d) {
+            .attr('transform', function (d) {
               return 'translate(' + [d.x, d.y] + ')rotate(' + d.rotate + ')';
             })
             .on($scope.events)
-            .text(function(d) {
+            .text(function (d) {
               return d.text;
             });
         }
