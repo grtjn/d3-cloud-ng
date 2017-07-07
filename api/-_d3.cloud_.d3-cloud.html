@@ -77,6 +77,16 @@
             </span>
           </td>
         </tr><tr>
+          <td class="name" nowrap="">filter</td>
+          <td class="type"><span class="param-type">
+            Function
+          </span></td>
+          <td class="description last">
+            <span>
+              <p>Optional. A function that filters words. Invoked for each word, should return true to retain the word, false to skip. Defaults to comparing against ignoreList for legacy purposes.</p>
+            </span>
+          </td>
+        </tr><tr>
           <td class="name" nowrap="">font</td>
           <td class="type"><span class="param-type">
             String
@@ -93,7 +103,7 @@
           </span></td>
           <td class="description last">
             <span>
-              <p>Optional. An array of word names to ignore. Default: [].</p>
+              <p>Deprecated. Optional. An array of word names to ignore. Default: [].</p>
             </span>
           </td>
         </tr><tr>
@@ -143,7 +153,7 @@
           </span></td>
           <td class="description last">
             <span>
-              <p>A binding to an array of objects with name and score properties.</p>
+              <p>A binding to an array of objects with name, score and optional color properties.</p>
             </span>
           </td>
         </tr>
@@ -152,7 +162,7 @@
   </div>
   <div>
     <h4>Example</h4>
-    <pre class="prettyprint"><code><span class="str">&lt;d3-cloud events="ctrl.wordEvents" font="Impact" ignoreList="ctrl.ignoreWords" padding="5"
+    <pre class="prettyprint"><code><span class="str">&lt;d3-cloud events="ctrl.wordEvents" font="Impact" filter="ctrl.filter" padding="5"
     rotate="ctrl.rotateWord" slope-base="2" slope-factor="30" words="ctrl.words">
   &lt;/d3-cloud></span></code></pre>
   </div>
