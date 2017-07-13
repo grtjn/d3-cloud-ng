@@ -27,11 +27,11 @@
   'use strict';
 
   angular.module('d3.cloud')
-    .directive('d3Cloud', ['$log', d3CloudDirective]);
+    .directive('d3Cloud', ['$log', '$window', d3CloudDirective]);
 
   d3CloudDirective.$inject = [];
 
-  function d3CloudDirective($log) {
+  function d3CloudDirective($log, $window) {
     return {
       restrict: 'E',
       replace: 'true',
@@ -69,7 +69,7 @@
           };
         var slopeBase = $attrs.slopeBase ? Number($scope.slopeBase) : 2;
         var slopeFactor = $attrs.slopeFactor ? Number($scope.slopeFactor) : 30;
-        $scope.$on('d3-cloud:window-resized', function(event, args) {
+        angular.element($window).bind('resize', function() {
           var words = $scope.filterWords($scope.words);
           $scope.updateCloud(words);
         });
