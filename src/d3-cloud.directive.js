@@ -69,6 +69,10 @@
           };
         var slopeBase = $attrs.slopeBase ? Number($scope.slopeBase) : 2;
         var slopeFactor = $attrs.slopeFactor ? Number($scope.slopeFactor) : 30;
+        $scope.$on('d3-cloud:window-resized', function(event, args) {
+          var words = $scope.filterWords($scope.words);
+          $scope.updateCloud(words);
+        });
 
         $scope.createCloud = function (words) {
           var cloudWidth = $element[0].clientWidth + 0;
