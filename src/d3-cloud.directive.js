@@ -69,11 +69,14 @@
           };
         var slopeBase = $attrs.slopeBase ? Number($scope.slopeBase) : 2;
         var slopeFactor = $attrs.slopeFactor ? Number($scope.slopeFactor) : 30;
-        angular.element($window).bind('resize', function() {
+        var windowResized = function() {
           var words = $scope.filterWords($scope.words);
           $scope.updateCloud(words);
+        };
+        angular.element($window).on('resize', windowResized);
+        $scope.$on('$destroy', function () {
+          angular.element($window).off('scroll', windowResized);
         });
-
         $scope.createCloud = function (words) {
           var cloudWidth = $element[0].clientWidth + 0;
           var cloudHeight = $element[0].clientHeight + 0;
