@@ -89216,6 +89216,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
           $log.warn('You are using deprecated ignoreList. Please use custom filter function instead.');
         }
         $scope.filter = $scope.filter || function (word) {
+            console.log(word.name);
             return $scope.ignoreList.indexOf(word.name) === -1;
           };
         var padding = $attrs.padding ? Number($scope.padding) : 5;
