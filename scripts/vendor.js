@@ -89131,7 +89131,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
               updateflag = 1;
             } else {
               for (i = 0; i < items.length; i++) {
-                if (!updateflag & items[i].name !== oldValue[i].name & items[i].score !== oldValue[i].score) {
+                if (!updateflag && items[i].name !== oldValue[i].name && items[i].score !== oldValue[i].score) {
                   updateflag = 1;
                 }
               }
