@@ -207,7 +207,7 @@
           var size = $scope.cloud.size();
           var fill = (d3.schemeCategory20 ? d3.schemeCategory20 : d3.scale.category20());
           d3.select($element[0]).append('svg')
-            .attr('width', size[0])
+            .attr('width', '100%')
             .attr('height', size[1])
             .append('g')
             .attr('transform', 'translate(' + size[0] / 2 + ',' + size[1] / 2 + ')')
