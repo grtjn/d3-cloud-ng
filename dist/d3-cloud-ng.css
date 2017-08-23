@@ -1,3 +1,6 @@
+.d3-cloud svg {
+  width: 100%;
+}
 .d3-cloud text {
   cursor: hand;
   cursor: pointer;

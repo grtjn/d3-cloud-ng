@@ -27,11 +27,11 @@
   'use strict';
 
   angular.module('d3.cloud')
-    .directive('d3Cloud', ['$log', d3CloudDirective]);
+    .directive('d3Cloud', ['$log', '$window', d3CloudDirective]);
 
   d3CloudDirective.$inject = [];
 
-  function d3CloudDirective($log) {
+  function d3CloudDirective($log, $window) {
     return {
       restrict: 'E',
       replace: 'true',
@@ -69,7 +69,14 @@
           };
         var slopeBase = $attrs.slopeBase ? Number($scope.slopeBase) : 2;
         var slopeFactor = $attrs.slopeFactor ? Number($scope.slopeFactor) : 30;
-
+        var windowResized = function() {
+          var words = $scope.filterWords($scope.words);
+          $scope.updateCloud(words);
+        };
+        angular.element($window).on('resize', windowResized);
+        $scope.$on('$destroy', function () {
+          angular.element($window).off('scroll', windowResized);
+        });
         $scope.createCloud = function (words) {
           var cloudWidth = $element[0].clientWidth + 0;
           var cloudHeight = $element[0].clientHeight + 0;
@@ -200,7 +207,7 @@
           var size = $scope.cloud.size();
           var fill = (d3.schemeCategory20 ? d3.schemeCategory20 : d3.scale.category20());
           d3.select($element[0]).append('svg')
-            .attr('width', size[0])
+            .attr('width', '100%')
             .attr('height', size[1])
             .append('g')
             .attr('transform', 'translate(' + size[0] / 2 + ',' + size[1] / 2 + ')')

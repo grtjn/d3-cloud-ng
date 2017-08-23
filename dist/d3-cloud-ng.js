@@ -6,6 +6,40 @@
   ]);
 }());
 
+/**
+ * @ngdoc directive
+ * @memberOf 'd3.cloud'
+ * @name d3-cloud-resize
+ * @description
+ *   Angular directive which broadcast window resize to the d3-cloud directive.
+ *
+ *
+ * @example
+ *   <body d3-cloud-resize>
+ *   </body>
+ */
+
+(function () {
+
+  'use strict';
+
+  angular.module('d3.cloud')
+    .directive('d3CloudResize', ['$window', d3CloudResizeDirective]);
+
+  d3CloudResizeDirective.$inject = [];
+
+  function d3CloudResizeDirective($window) {
+    return {
+      link: function ($scope) {
+        angular.element($window).bind('resize', function() {
+          $scope.$broadcast('d3-cloud:window-resized');
+        });
+      }
+    };
+  }
+
+}());
+
 (function () {
 
   'use strict';
@@ -17,22 +51,17 @@
 
   function d3CloudController($scope) {
     $scope.$watch('words', function (newValue, oldValue) {
-      var i = [];
       var items = [];
       var updateflag = 0;
 
       if (newValue) {
-        for (var i = 0; i < newValue.length; i++) {
-          if ($scope.filter(newValue[i])) {
-            items.push(newValue[i]);
-          }
-        }
+        items = $scope.filterWords(newValue);
         if ($scope.cloud) {
           if (oldValue) {
             if (oldValue.length !== items.length) {
               updateflag = 1;
             } else {
-              for (i = 0; i < items.length; i++) {
+              for (var i = 0; i < items.length; i++) {
                 if (!updateflag & items[i].name !== oldValue[i].name & items[i].score !== oldValue[i].score) {
                   updateflag = 1;
                 }
@@ -54,6 +83,16 @@
         $scope.updateCloud([]);
       }
     }, true);
+
+    $scope.filterWords = function (items) {
+      var result = [];
+      for (var i = 0; i < items.length; i++) {
+        if ($scope.filter(items[i])) {
+          result.push(items[i]);
+        }
+      }
+      return result;
+    }
   }
 })();
 
@@ -128,6 +167,10 @@
           };
         var slopeBase = $attrs.slopeBase ? Number($scope.slopeBase) : 2;
         var slopeFactor = $attrs.slopeFactor ? Number($scope.slopeFactor) : 30;
+        $scope.$on('d3-cloud:window-resized', function(event, args) {
+          var words = $scope.filterWords($scope.words);
+          $scope.updateCloud(words);
+        });
 
         $scope.createCloud = function (words) {
           var cloudWidth = $element[0].clientWidth + 0;
