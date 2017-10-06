@@ -7,6 +7,118 @@
             <!--Once you're up and running, visit the <a ui-sref="api">API documentation</a> to learn how to get the most out of it.-->
         </p>
 
+        <h3>For use with slush-marklogic-node</h3>
+
+        <ol class="steps">
+            <!-- 1 -->
+            <li>
+                <p>
+                    Use Bower to install it automatically:
+                </p>
+                <div hljs no-escape language="bash">bower install [--save] d3-cloud-ng</div>
+                <p>
+                    Or if you prefer bleeding edge:
+                </p>
+                <div hljs no-escape language="bash">bower install [--save] git@github.com:grtjn/d3-cloud-ng.git</div>
+            </li>
+
+            <!-- 4 -->
+            <li>
+                <p>
+                  Edit for instance <code>ui/app/search/search.modules.js</code>, and append <code>d3.cloud</code> to the module dependencies:
+                </p>
+                <div hljs no-escape language="js">angular.module('app.search', [..., 'd3.cloud']);</div>
+            </li>
+            
+            <!-- 5 -->
+            <li>
+                <p>
+                  Expose objects and call-back functions in your Angular controller:
+                </p>
+                <pre hljs no-escape language="js">
+function SearchCtrl($scope, $location, searchFactory) {
+  var ctrl = this;
+
+  superCtrl.constructor.call(ctrl, $scope, $location, searchFactory.newContext());
+
+  ctrl.init();
+
+  // override the updateSearchResults function from superCtrl to append a call to updateCloud..
+  ctrl.updateSearchResults = function updateSearchResults(data) {
+    superCtrl.updateSearchResults.apply(ctrl, arguments);
+
+    // fill the cloud with the facet of choice
+    ctrl.cloudFacet = data.facets.TagCloud;
+    ctrl.updateCloud();
+    data.facets.TagCloud.hide = true;
+
+    return ctrl;
+  };
+
+  ctrl.words = [];
+
+  ctrl.updateCloud = function() {
+    if (ctrl.cloudFacet) {
+      ctrl.words = [];
+      var activeFacets = [];
+
+      // find all selected facet values..
+      angular.forEach(ctrl.mlSearch.getActiveFacets(), function(facet, key) {
+        angular.forEach(facet.values, function(value, index) {
+          activeFacets.push((value.value+'').toLowerCase());
+        });
+      });
+
+      angular.forEach(ctrl.cloudFacet.facetValues, function(value, index) {
+        var q = (ctrl.qtext || '').toLowerCase();
+        var val = value.name.toLowerCase();
+
+        // suppress search terms, and selected facet values from the D3 cloud..
+        if ((q.indexOf(val) &lt; 0) &amp;&amp; (activeFacets.indexOf(val) &lt; 0)) {
+          ctrl.words.push({name: value.name, score: value.count});
+        }
+      });
+    }
+  };
+
+  ctrl.noRotate = function(word) {
+    return 0;
+  };
+
+  ctrl.filterWord = function(word) {
+    return true;
+  };
+
+  ctrl.cloudEvents = {
+    'dblclick': function(tag) {
+      // stop propagation
+      d3.event.stopPropagation();
+
+      // undo default behavior of browsers to select at dblclick
+      var body = document.getElementsByTagName('body')[0];
+      window.getSelection().collapse(body,0);
+
+      // custom behavior, for instance toggle facet on dblclick
+      ctrl.toggleFacet(ctrl.cloudFacet.__key, tag.text);
+    }
+  };
+
+}
+</pre>
+            </li>
+
+            <!-- 6 -->
+            <li>
+                <p>
+                  Add a <code>&lt;d3-cloud&gt;</code> element in your template like so:
+                </p>
+                <pre hljs no-escape language="html">
+&lt;d3-cloud words="$ctrl.words" padding="0" rotate="$ctrl.noRotate(word)" filter="$ctrl.filterWord(word)" events="$ctrl.cloudEvents">&lt;/d3-cloud></pre>
+            </li>
+        </ol>
+
+        <h3>Other uses</h3>
+
         <ol class="steps">
             <!-- 1 -->
             <li>

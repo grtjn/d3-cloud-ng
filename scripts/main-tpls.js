@@ -30,7 +30,77 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/quickstart.html',
-    '<h1 class="page-header">Quickstart</h1><div class="row"><div class="col-md-12"><p>To start using D3 Cloud for Angular, follow these simple steps to get started.</p><ol class="steps"><li><p>Download <a href="https://raw.github.com/grtjn/d3-cloud-ng/master/dist/d3-cloud-ng.js">d3-cloud-ng.js</a> (<a href="https://raw.github.com/grtjn/d3-cloud-ng/master/dist/d3-cloud-ng.min.js">minified version</a>) and put it with your other scripts. Alternatively, you can use Bower to install it automatically:</p><div hljs="" no-escape="" language="bash">bower install [--save] d3-cloud-ng</div><p>Or if you prefer bleeding edge:</p><div hljs="" no-escape="" language="bash">bower install [--save] git@github.com:grtjn/d3-cloud-ng.git</div><p>If not using Bower, you\'ll also need to fetch <a href="https://github.com/mbostock-bower/d3-bower/blob/master/d3.js">d3[.min].js</a> and <a href="https://github.com/jasondavies/d3-cloud/blob/master/build/d3.layout.cloud.js" rel="external">d3.layout.cloud.js</a> yourself.</p></li><li><p>Load ui-utils.js, ui-map.js, and d3-cloud-ng.js into your HTML page (typically in the end of the <em>BODY</em> of your HTML):</p><pre hljs="" no-escape="" language="html">\n' +
+    '<h1 class="page-header">Quickstart</h1><div class="row"><div class="col-md-12"><p>To start using D3 Cloud for Angular, follow these simple steps to get started.</p><h3>For use with slush-marklogic-node</h3><ol class="steps"><li><p>Use Bower to install it automatically:</p><div hljs="" no-escape="" language="bash">bower install [--save] d3-cloud-ng</div><p>Or if you prefer bleeding edge:</p><div hljs="" no-escape="" language="bash">bower install [--save] git@github.com:grtjn/d3-cloud-ng.git</div></li><li><p>Edit for instance <code>ui/app/search/search.modules.js</code>, and append <code>d3.cloud</code> to the module dependencies:</p><div hljs="" no-escape="" language="js">angular.module(\'app.search\', [..., \'d3.cloud\']);</div></li><li><p>Expose objects and call-back functions in your Angular controller:</p><pre hljs="" no-escape="" language="js">\n' +
+    'function SearchCtrl($scope, $location, searchFactory) {\n' +
+    '  var ctrl = this;\n' +
+    '\n' +
+    '  superCtrl.constructor.call(ctrl, $scope, $location, searchFactory.newContext());\n' +
+    '\n' +
+    '  ctrl.init();\n' +
+    '\n' +
+    '  // override the updateSearchResults function from superCtrl to append a call to updateCloud..\n' +
+    '  ctrl.updateSearchResults = function updateSearchResults(data) {\n' +
+    '    superCtrl.updateSearchResults.apply(ctrl, arguments);\n' +
+    '\n' +
+    '    // fill the cloud with the facet of choice\n' +
+    '    ctrl.cloudFacet = data.facets.TagCloud;\n' +
+    '    ctrl.updateCloud();\n' +
+    '    data.facets.TagCloud.hide = true;\n' +
+    '\n' +
+    '    return ctrl;\n' +
+    '  };\n' +
+    '\n' +
+    '  ctrl.words = [];\n' +
+    '\n' +
+    '  ctrl.updateCloud = function() {\n' +
+    '    if (ctrl.cloudFacet) {\n' +
+    '      ctrl.words = [];\n' +
+    '      var activeFacets = [];\n' +
+    '\n' +
+    '      // find all selected facet values..\n' +
+    '      angular.forEach(ctrl.mlSearch.getActiveFacets(), function(facet, key) {\n' +
+    '        angular.forEach(facet.values, function(value, index) {\n' +
+    '          activeFacets.push((value.value+\'\').toLowerCase());\n' +
+    '        });\n' +
+    '      });\n' +
+    '\n' +
+    '      angular.forEach(ctrl.cloudFacet.facetValues, function(value, index) {\n' +
+    '        var q = (ctrl.qtext || \'\').toLowerCase();\n' +
+    '        var val = value.name.toLowerCase();\n' +
+    '\n' +
+    '        // suppress search terms, and selected facet values from the D3 cloud..\n' +
+    '        if ((q.indexOf(val) &lt; 0) &amp;&amp; (activeFacets.indexOf(val) &lt; 0)) {\n' +
+    '          ctrl.words.push({name: value.name, score: value.count});\n' +
+    '        }\n' +
+    '      });\n' +
+    '    }\n' +
+    '  };\n' +
+    '\n' +
+    '  ctrl.noRotate = function(word) {\n' +
+    '    return 0;\n' +
+    '  };\n' +
+    '\n' +
+    '  ctrl.filterWord = function(word) {\n' +
+    '    return true;\n' +
+    '  };\n' +
+    '\n' +
+    '  ctrl.cloudEvents = {\n' +
+    '    \'dblclick\': function(tag) {\n' +
+    '      // stop propagation\n' +
+    '      d3.event.stopPropagation();\n' +
+    '\n' +
+    '      // undo default behavior of browsers to select at dblclick\n' +
+    '      var body = document.getElementsByTagName(\'body\')[0];\n' +
+    '      window.getSelection().collapse(body,0);\n' +
+    '\n' +
+    '      // custom behavior, for instance toggle facet on dblclick\n' +
+    '      ctrl.toggleFacet(ctrl.cloudFacet.__key, tag.text);\n' +
+    '    }\n' +
+    '  };\n' +
+    '\n' +
+    '}\n' +
+    '</pre></li><li><p>Add a <code>&lt;d3-cloud&gt;</code> element in your template like so:</p><pre hljs="" no-escape="" language="html">\n' +
+    '&lt;d3-cloud words="$ctrl.words" padding="0" rotate="$ctrl.noRotate(word)" filter="$ctrl.filterWord(word)" events="$ctrl.cloudEvents">&lt;/d3-cloud></pre></li></ol><h3>Other uses</h3><ol class="steps"><li><p>Download <a href="https://raw.github.com/grtjn/d3-cloud-ng/master/dist/d3-cloud-ng.js">d3-cloud-ng.js</a> (<a href="https://raw.github.com/grtjn/d3-cloud-ng/master/dist/d3-cloud-ng.min.js">minified version</a>) and put it with your other scripts. Alternatively, you can use Bower to install it automatically:</p><div hljs="" no-escape="" language="bash">bower install [--save] d3-cloud-ng</div><p>Or if you prefer bleeding edge:</p><div hljs="" no-escape="" language="bash">bower install [--save] git@github.com:grtjn/d3-cloud-ng.git</div><p>If not using Bower, you\'ll also need to fetch <a href="https://github.com/mbostock-bower/d3-bower/blob/master/d3.js">d3[.min].js</a> and <a href="https://github.com/jasondavies/d3-cloud/blob/master/build/d3.layout.cloud.js" rel="external">d3.layout.cloud.js</a> yourself.</p></li><li><p>Load ui-utils.js, ui-map.js, and d3-cloud-ng.js into your HTML page (typically in the end of the <em>BODY</em> of your HTML):</p><pre hljs="" no-escape="" language="html">\n' +
     '&lt;script src=\'/bower_components/d3/d3[.min].js\'>&lt;/script>\n' +
     '&lt;script src=\'/bower_components/d3-cloud/build/d3.layout.cloud.js\'>&lt;/script>\n' +
     '&lt;script src=\'/bower_components/d3-cloud-ng/dist/d3-cloud-ng[.min].js\'>&lt;/script></pre><p class="text-muted">Note: You can simplify this by making use of <a href="https://www.npmjs.com/package/wiredep" rel="external">wiredep</a>, optionally together with <a href="https://www.npmjs.com/package/gulp-useref" rel="external">gulp-useref</a>.</p></li><li><p>Load d3-cloud-ng.css into your HTML page (typically in the end of the <em>HEAD</em> of your HTML):</p><pre hljs="" no-escape="" language="html">\n' +
