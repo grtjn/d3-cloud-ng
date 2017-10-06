@@ -16,8 +16,8 @@
  * @attr {Array}     words        A binding to an array of objects with name, score and optional color properties.
  *
  * @example
- *   <d3-cloud events="ctrl.wordEvents" font="Impact" filter="ctrl.filter" padding="5"
- *     rotate="ctrl.rotateWord" slope-base="2" slope-factor="30" words="ctrl.words">
+ *   <d3-cloud events="$ctrl.cloudEvents" font="Impact" filter="$ctrl.filterWord(word)" padding="5"
+ *     rotate="$ctrl.rotateWord(word)" slope-base="2" slope-factor="30" words="$ctrl.words">
  *   </d3-cloud>
  */
 

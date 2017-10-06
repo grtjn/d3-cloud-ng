@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.9.9](https://github.com/grtjn/d3-cloud-ng/tree/0.9.9) (2017-10-06)
+[Full Changelog](https://github.com/grtjn/d3-cloud-ng/compare/0.9.8...0.9.9)
+
+**Implemented enhancements:**
+
+- Respond automatically to window resizes [\#22](https://github.com/grtjn/d3-cloud-ng/issues/22)
+- Code cleanup [\#12](https://github.com/grtjn/d3-cloud-ng/issues/12)
+
+**Fixed bugs:**
+
+- Optional bindings requires angular ^1.4.4 [\#23](https://github.com/grtjn/d3-cloud-ng/issues/23)
+
 ## [0.9.8](https://github.com/grtjn/d3-cloud-ng/tree/0.9.8) (2017-07-07)
 [Full Changelog](https://github.com/grtjn/d3-cloud-ng/compare/0.9.7...0.9.8)
 
