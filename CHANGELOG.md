@@ -12,6 +12,10 @@
 
 - Optional bindings requires angular ^1.4.4 [\#23](https://github.com/grtjn/d3-cloud-ng/issues/23)
 
+**Closed issues:**
+
+- Update quickstart [\#20](https://github.com/grtjn/d3-cloud-ng/issues/20)
+
 ## [0.9.8](https://github.com/grtjn/d3-cloud-ng/tree/0.9.8) (2017-07-07)
 [Full Changelog](https://github.com/grtjn/d3-cloud-ng/compare/0.9.7...0.9.8)
 
